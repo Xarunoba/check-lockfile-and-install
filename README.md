@@ -1,10 +1,12 @@
-# @xarunoba/clai
+# ⬆️ @xarunoba/clai
 
-**`Check Lockfile and Install`**
+**`clai`** — check lockfiles and install
 
-A simple CLI that checks if there are changes to the lockfile after pull and install accordingly.
+Run package installation after git pull. Supports `npm`, `pnpm`, and `yarn`.
 
-Currently supports `npm`,`pnpm`, and `yarn`.
+## Why
+
+Automatically updating dependencies through a bot is common nowadays... It's practical to run a local `install` to synchronize local dependencies with the newer versions. This aims to solve that issue.
 
 ## Usage
 
@@ -24,4 +26,19 @@ pnpm dlx @xarunoba/clai
 
 ```bash
 yarn dlx @xarunoba/cai
+```
+
+## Integration with [`simple-git-hooks`](https://github.com/toplenboren/simple-git-hooks)
+
+Integrating with [`simple-git-hooks`](https://github.com/toplenboren/simple-git-hooks) is easy as a toasted bread:
+
+```json
+// package.json
+{
+  ...
+  "simple-git-hooks": {
+    "post-merge": "npx @xarunoba/clai"
+  }
+  ...
+}
 ```
