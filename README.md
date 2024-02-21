@@ -1,4 +1,4 @@
-# ⬆️ @xarunoba/clai
+# ⬆️ @xarunoba/clai [![npm version](https://badge.fury.io/js/@xarunoba%2Fclai.svg)](https://badge.fury.io/js/@xarunoba%2Fclai)
 
 **`clai`** — check lockfiles and install
 
