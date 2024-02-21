@@ -1,6 +1,6 @@
 {
   "name": "@xarunoba/clai",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "A simple CLI that checks if there are changes to the lockfile after pull and install accordingly",
   "bin": {
     "clai": "bin/cli.js"
@@ -13,7 +13,11 @@
   "keywords": [
     "cli",
     "clai",
-    "lockfile-check"
+    "lockfile-check",
+    "git",
+    "post-merge",
+    "developer-experience",
+    "dependency-updater"
   ],
   "homepage": "https://github.com/xarunoba/clai",
   "bugs": {
