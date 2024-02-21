@@ -1,11 +1,20 @@
 {
   "name": "@xarunoba/clai",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A simple CLI that checks if there are changes to the lockfile after pull and install accordingly",
   "bin": {
     "clai": "bin/cli.js"
   },
   "scripts": {},
   "author": "Jeter Jude C. Santos <me@xaru.win> (https://xaru.win)",
-  "license": "MIT"
+  "license": "MIT",
+  "keywords": [
+    "cli",
+    "clai",
+    "lockfile-check"
+  ],
+  "homepage": "https://github.com/xarunoba/clai",
+  "bugs": {
+    "url": "https://github.com/xarunoba/clai/issues"
+  }
 }
