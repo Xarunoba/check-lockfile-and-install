@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 const path = require('node:path')
+const fs = require('node:fs')
 const execSync = require('node:child_process').execSync
 const process = require('node:process')
 
@@ -12,31 +13,48 @@ const installCommands = {
 }
 
 function runInstallCommandInDirs(dirPaths) {
+  const lockFiles = Object.keys(installCommands)
   dirPaths.forEach((dirPath) => {
-    const lockFiles = ['pnpm-lock.yaml', 'package-lock.json', 'yarn.lock']
     let detectedLockFile = lockFiles.find((lockFile) => {
-      try {
-        return fs.existsSync(path.join(dirPath, lockFile))
-      } catch {
-        return false
-      }
+        const lockfilePath = path.posix.join(dirPath, lockFile)
+        console.log(`clai: Checking for "${lockFile}" in "${dirPath}"`)
+        if (fs.existsSync(lockfilePath)) {
+          return lockFile
+        } else {
+          console.error(
+            `clai: Could not find "${lockFile}" in "${dirPath}"`
+          )
+        }
     })
 
     const installCommand = detectedLockFile
       ? installCommands[detectedLockFile]
-      : 'npm install'
+      : null
+
+    if (installCommand == null) {
+      throw new Error(
+        `No lockfile found in "${dirPath}"`
+      )
+    } else {
+      console.log(`clai: Running ${installCommand} in ${dirPath}`)
+    }
 
     try {
       process.chdir(dirPath)
       execSync(installCommand)
-      console.log(`✅ Successfully ran ${installCommand} in ${dirPath}`)
+      console.log(`clai: Successfully ran ${installCommand} in ${dirPath}`)
     } catch (error) {
-      console.error(`❌ Failed to run ${installCommand} in ${dirPath}:`, error)
+      throw new Error(
+        `Failed to run ${installCommand} in "${dirPath}":`,
+        error
+      )
     }
   })
 }
 
 try {
+  // start message
+  console.log('clai: checking for lockfile changes')
   const gitDiffCommand = 'git diff --name-only HEAD~1 HEAD'
   const modifiedFiles = execSync(gitDiffCommand)
     .toString()
@@ -44,21 +62,33 @@ try {
     .filter((fileName) => fileName.match(lockfileRegex))
     .map((fileName) => path.posix.join(...fileName.split('/').slice(2)))
 
+  // console.log
+  console.log(execSync(gitDiffCommand).toString())
+
+  if (modifiedFiles.length > 0) {
+    console.log(
+      `clai: Found ${modifiedFiles.length} modified file/s in the following directories:`
+    )
+    console.log(`>     ${modifiedFiles.join(',\n>     ')}`)
+  }
+
   if (modifiedFiles.length > 0) {
     const dirPaths = Array.from(
       new Set(
         modifiedFiles.map((pkgLockFilePath) => path.dirname(pkgLockFilePath))
       )
     )
+
     runInstallCommandInDirs(dirPaths)
     console.log(
-      `📦 ${modifiedFiles.join(
+      `clai: "${modifiedFiles.join(
         ', '
-      )} were changed. Running install script to update your dependencies...`
+      )}" changed. Running install script to update your dependencies...`
     )
   } else {
-    console.log('No changes found.')
+    console.log('clai: No changes found.')
   }
 } catch (err) {
-  console.error('Error running CLAI:\n', err)
+  console.error('clai: An error has occured: \n', err.message)
+  process.exit(1)
 }
