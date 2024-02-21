@@ -21,7 +21,7 @@ function runInstallCommandInDirs(dirPaths) {
       if (fs.existsSync(lockfilePath)) {
         return lockFile
       } else {
-        console.error(`clai: Could not find "${lockFile}" in "${dirPath}"`)
+        console.error(`clai: Could not find "${lockFile}" in "${dirPath}"\n`)
       }
     })
 
@@ -49,20 +49,21 @@ try {
   // start message
   console.log('clai: checking for lockfile changes')
   const gitDiffCommand = 'git diff --name-only HEAD~1 HEAD'
-  const modifiedFiles = execSync(gitDiffCommand)
-    .toString()
+  const gitDiffOutput = execSync(gitDiffCommand).toString()
+  const modifiedFiles = gitDiffOutput
     .split('\n')
     .filter((fileName) => fileName.match(lockfileRegex))
     .map((fileName) => path.posix.join(...fileName.split('/').slice(2)))
 
-  // console.log
-  console.log(execSync(gitDiffCommand).toString())
+  console.log(
+    `clai: Modified files: \n>     ${gitDiffOutput.split('\n>     ')}`
+  )
 
   if (modifiedFiles.length > 0) {
     console.log(
       `clai: Found ${modifiedFiles.length} modified file/s in the following directories:`
     )
-    console.log(`>     ${modifiedFiles.join(',\n>     ')}`)
+    console.log(`>     ${modifiedFiles.join(',\n>     ')}\n`)
   }
 
   if (modifiedFiles.length > 0) {
@@ -79,9 +80,10 @@ try {
       )}" changed. Running install script to update your dependencies...`
     )
   } else {
-    console.log('clai: No changes found.')
+    console.log('clai: No lockfile changes found.')
   }
+  process.exit(0)
 } catch (err) {
-  console.error('clai: An error has occured: \n', err.message)
+  console.error('clai: An error has occured:\n>    ', err.message)
   process.exit(1)
 }
