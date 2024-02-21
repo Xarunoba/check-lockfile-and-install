@@ -16,15 +16,13 @@ function runInstallCommandInDirs(dirPaths) {
   const lockFiles = Object.keys(installCommands)
   dirPaths.forEach((dirPath) => {
     let detectedLockFile = lockFiles.find((lockFile) => {
-        const lockfilePath = path.posix.join(dirPath, lockFile)
-        console.log(`clai: Checking for "${lockFile}" in "${dirPath}"`)
-        if (fs.existsSync(lockfilePath)) {
-          return lockFile
-        } else {
-          console.error(
-            `clai: Could not find "${lockFile}" in "${dirPath}"`
-          )
-        }
+      const lockfilePath = path.posix.join(dirPath, lockFile)
+      console.log(`clai: Checking for "${lockFile}" in "${dirPath}"`)
+      if (fs.existsSync(lockfilePath)) {
+        return lockFile
+      } else {
+        console.error(`clai: Could not find "${lockFile}" in "${dirPath}"`)
+      }
     })
 
     const installCommand = detectedLockFile
@@ -32,9 +30,7 @@ function runInstallCommandInDirs(dirPaths) {
       : null
 
     if (installCommand == null) {
-      throw new Error(
-        `No lockfile found in "${dirPath}"`
-      )
+      throw new Error(`No lockfile found in "${dirPath}"`)
     } else {
       console.log(`clai: Running ${installCommand} in ${dirPath}`)
     }
@@ -44,10 +40,7 @@ function runInstallCommandInDirs(dirPaths) {
       execSync(installCommand)
       console.log(`clai: Successfully ran ${installCommand} in ${dirPath}`)
     } catch (error) {
-      throw new Error(
-        `Failed to run ${installCommand} in "${dirPath}":`,
-        error
-      )
+      throw new Error(`Failed to run ${installCommand} in "${dirPath}":`, error)
     }
   })
 }
