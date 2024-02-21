@@ -1,16 +1,17 @@
 # ⬆️ @xarunoba/clai
+
 ![Static Badge](https://img.shields.io/badge/Made_with-%E2%9D%A4%EF%B8%8F-red?style=for-the-badge) ![NPM License](https://img.shields.io/npm/l/%40xarunoba%2Fclai?style=for-the-badge)
- ![GitHub package.json version](https://img.shields.io/github/package-json/v/xarunoba/clai?style=for-the-badge&logo=npm&color=green) 
+![GitHub package.json version](https://img.shields.io/github/package-json/v/xarunoba/clai?style=for-the-badge&logo=npm&color=green)
 
 **`clai`** — check lockfiles and install
 
-Run package installation after git pull. Supports `npm`, `pnpm`, and `yarn`.
+Run package installation after checking for lockfile updates. Integrate with git hooks. Supports `npm`, `pnpm`, and `yarn`.
 
 ## Why
 
-Automatically updating dependencies through a bot is common nowadays... It's practical to run a local `install` to synchronize local dependencies with the newer versions. This aims to solve that issue.
+Using a bot to update dependencies is becoming widespread. Installing after pulling from your remote repository is now needed in order to synchronize your local modules. `clai` fixes this issue by checking for lockfile updates and running install.
 
-## Usage
+## Usage (CLI)
 
 ### npm
 
