@@ -5,7 +5,9 @@
   "bin": {
     "clai": "bin/cli.js"
   },
-  "scripts": {},
+  "scripts": {
+    "start": "node ./bin/cli.js"
+  },
   "author": "Jeter Jude C. Santos <me@xaru.win> (https://xaru.win)",
   "license": "MIT",
   "keywords": [
