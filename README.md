@@ -11,27 +11,9 @@ Run package installation after checking for lockfile updates. Integrate with git
 
 Using a bot to update dependencies is becoming widespread. Installing after pulling from your remote repository is now needed in order to synchronize your local modules. `clai` fixes this issue by checking for lockfile updates and running install.
 
-## Usage (CLI)
+## Installation
 
-### npm
-
-```bash
-npx @xarunoba/clai
-```
-
-### pnpm
-
-```bash
-pnpm dlx @xarunoba/clai
-```
-
-### yarn
-
-```bash
-yarn dlx @xarunoba/cai
-```
-
-## Integration with [`simple-git-hooks`](https://github.com/toplenboren/simple-git-hooks)
+### With [`simple-git-hooks`](https://github.com/toplenboren/simple-git-hooks)
 
 Integrating with [`simple-git-hooks`](https://github.com/toplenboren/simple-git-hooks) is easy as a toasted bread:
 
@@ -40,7 +22,7 @@ Integrating with [`simple-git-hooks`](https://github.com/toplenboren/simple-git-
 {
   ...
   "simple-git-hooks": {
-    "post-merge": "npx @xarunoba/clai"
+    "post-merge": "npx @xarunoba/clai" // or use pnpm dlx, yarn dlx
   }
   ...
 }
