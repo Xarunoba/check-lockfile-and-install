@@ -17,11 +17,11 @@ function runInstallCommandInDirs(dirPaths) {
   dirPaths.forEach((dirPath) => {
     let detectedLockFile = lockFiles.find((lockFile) => {
       const lockfilePath = path.posix.join(dirPath, lockFile)
-      console.log(`clai: Checking for "${lockFile}" in "${dirPath}"`)
+      console.log(`❯ Checking for "${lockFile}" in "${dirPath}"`)
       if (fs.existsSync(lockfilePath)) {
         return lockFile
       } else {
-        console.error(`clai: Could not find "${lockFile}" in "${dirPath}"\n`)
+        console.error(`❯ Could not find "${lockFile}" in "${dirPath}"\n`)
       }
     })
 
@@ -32,13 +32,14 @@ function runInstallCommandInDirs(dirPaths) {
     if (installCommand == null) {
       throw new Error(`No lockfile found in "${dirPath}"`)
     } else {
-      console.log(`clai: Running ${installCommand} in ${dirPath}`)
+      console.log(`◼ "${detectedLockFile}" found in "${dirPath}"`)
+      console.log(`   ❯ Running ${installCommand} in ${dirPath}`)
     }
 
     try {
       process.chdir(dirPath)
       execSync(installCommand)
-      console.log(`clai: Successfully ran ${installCommand} in ${dirPath}`)
+      console.log(`   ✔ Successfully ran ${installCommand} in ${dirPath}`)
     } catch (error) {
       throw new Error(`Failed to run ${installCommand} in "${dirPath}":`, error)
     }
@@ -46,8 +47,8 @@ function runInstallCommandInDirs(dirPaths) {
 }
 
 try {
-  // start message
-  console.log('clai: checking for lockfile changes')
+  console.log('✔ Preparing clai...')
+  console.log('❯ Checking for lockfile changes...')
   const gitDiffCommand = 'git diff --name-only HEAD~1 HEAD'
   const gitDiffOutput = execSync(gitDiffCommand).toString()
   const modifiedFiles = gitDiffOutput
@@ -56,14 +57,17 @@ try {
     .map((fileName) => path.posix.join(...fileName.split('/').slice(2)))
 
   console.log(
-    `clai: Modified files: \n>     ${gitDiffOutput.split('\n>     ')}`
+    `❯ Modified files: \n    ❯ ${gitDiffOutput
+      .split('\n')
+      .filter(Boolean)
+      .join('\n    ❯ ')}`
   )
 
   if (modifiedFiles.length > 0) {
     console.log(
-      `clai: Found ${modifiedFiles.length} modified file/s in the following directories:`
+      `❯ Found ${modifiedFiles.length} modified file/s in the following directories:`
     )
-    console.log(`>     ${modifiedFiles.join(',\n>     ')}\n`)
+    console.log(`    ❯ ${modifiedFiles.join(',\n    ❯ ')}\n`)
   }
 
   if (modifiedFiles.length > 0) {
@@ -75,15 +79,15 @@ try {
 
     runInstallCommandInDirs(dirPaths)
     console.log(
-      `clai: "${modifiedFiles.join(
-        ', '
-      )}" changed. Running install script to update your dependencies...`
+      `✔ Successfully ran install command in ${dirPaths.length} directories`
     )
   } else {
-    console.log('clai: No lockfile changes found.')
+    console.log('✘ No lockfile changes found!')
   }
+
+  console.log('✔ Finished clai!')
   process.exit(0)
 } catch (err) {
-  console.error('clai: An error has occured:\n>    ', err.message)
+  console.error('✘ An error has occured:\n   ❯ ', err.message)
   process.exit(1)
 }
