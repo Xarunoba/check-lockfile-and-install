@@ -1,7 +1,5 @@
 # @xarunoba/clai
 
-`WARNING! Currently experimental and untested`
-
 **`Check Lockfile and Install`**
 
 A simple CLI that checks if there are changes to the lockfile after pull and install accordingly.

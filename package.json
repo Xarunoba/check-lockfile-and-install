@@ -13,8 +13,7 @@
   "keywords": [
     "cli",
     "clai",
-    "lockfile-check",
-    "experimental"
+    "lockfile-check"
   ],
   "homepage": "https://github.com/xarunoba/clai",
   "bugs": {
