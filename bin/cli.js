@@ -5,10 +5,11 @@ const fs = require('node:fs')
 const execSync = require('node:child_process').execSync
 const process = require('node:process')
 
+const cwd = process.cwd()
 const lockfileRegex = /^(pnpm-lock\.yaml|package-lock\.json|yarn\.lock)/gm // regex pattern for finding lockfiles
 const installCommands = {
-  'pnpm-lock.yaml': 'pnpm install',
   'package-lock.json': 'npm install',
+  'pnpm-lock.yaml': 'pnpm install',
   'yarn.lock': 'yarn install',
 }
 
@@ -21,7 +22,7 @@ function runInstallCommandInDirs(dirPaths) {
       if (fs.existsSync(lockfilePath)) {
         return lockFile
       } else {
-        console.error(`❯ Could not find "${lockFile}" in "${dirPath}"\n`)
+        console.error(`   ✘ Could not find "${lockFile}" in "${dirPath}"\n`)
       }
     })
 
@@ -30,7 +31,7 @@ function runInstallCommandInDirs(dirPaths) {
       : null
 
     if (installCommand == null) {
-      throw new Error(`No lockfile found in "${dirPath}"`)
+      console.error(`   ✘ No lockfile found in "${dirPath}"`)
     } else {
       console.log(`◼ "${detectedLockFile}" found in "${dirPath}"`)
       console.log(`   ❯ Running ${installCommand} in ${dirPath}`)
@@ -39,15 +40,20 @@ function runInstallCommandInDirs(dirPaths) {
     try {
       process.chdir(dirPath)
       execSync(installCommand)
+      process.chdir(cwd)
       console.log(`   ✔ Successfully ran ${installCommand} in ${dirPath}`)
     } catch (error) {
-      throw new Error(`Failed to run ${installCommand} in "${dirPath}":`, error)
+      console.error(
+        `   ✘ Failed to run ${installCommand} in "${dirPath}":`,
+        error
+      )
+      process.chdir(cwd)
     }
   })
 }
 
 try {
-  console.log('✔ Preparing clai...')
+  console.log('◼ Preparing clai...')
   console.log('❯ Checking for lockfile changes...')
   const gitDiffCommand = 'git diff --name-only HEAD~1 HEAD'
   const gitDiffOutput = execSync(gitDiffCommand).toString()
@@ -57,7 +63,7 @@ try {
     .map((fileName) => path.posix.join(...fileName.split('/').slice(2)))
 
   console.log(
-    `❯ Modified files: \n    ❯ ${gitDiffOutput
+    `◼ Modified files: \n    ❯ ${gitDiffOutput
       .split('\n')
       .filter(Boolean)
       .join('\n    ❯ ')}`
