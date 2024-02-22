@@ -1,7 +1,10 @@
 {
   "name": "@xarunoba/clai",
   "version": "0.3.2",
-  "description": "A simple CLI that checks if there are changes to the lockfile after pull and install accordingly",
+  "description": "Run package installation after checking for lockfile updates.",
+  "files": [
+    "bin"
+  ],
   "bin": {
     "clai": "bin/cli.js"
   },
@@ -24,6 +27,9 @@
   "bugs": {
     "url": "https://github.com/xarunoba/clai/issues"
   },
+  "dependencies": {
+    "yargs": "^17.7.2"
+  },
   "devDependencies": {
     "lint-staged": "^15.2.2",
     "prettier": "3.2.5",
@@ -35,8 +41,5 @@
   "simple-git-hooks": {
     "pre-commit": "npx lint-staged",
     "post-merge": "node ./bin/cli.js"
-  },
-  "dependencies": {
-    "yargs": "^17.7.2"
   }
 }
