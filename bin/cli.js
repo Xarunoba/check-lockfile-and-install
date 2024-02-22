@@ -2,6 +2,7 @@
 
 const path = require("node:path");
 const fs = require("node:fs");
+
 const execSync = require("node:child_process").execSync;
 const process = require("node:process");
 
@@ -22,6 +23,7 @@ function checkFlags() {
   if (enabledFlags.length)
     console.log(`◼ Enabled flags: \n    ❯ ${enabledFlags.join("\n    ❯ ")}`);
 }
+
 function checkGit() {
   console.log("❯ Performing git checks...");
   try {
@@ -48,7 +50,7 @@ function checkGit() {
   console.log("✔ No git issues found!");
 }
 
-function installCommandInDirs(dirPaths) {
+function installInDirs(dirPaths) {
   dirPaths.forEach((dirPath) => {
     const detectedLockFiles = Object.keys(installCommands).filter(
       (lockFile) => {
@@ -61,8 +63,14 @@ function installCommandInDirs(dirPaths) {
     if (detectedLockFiles.length === 0)
       console.error(`   ✘ No lockfiles found in "${dirPath}"`);
     else {
-      if (detectedLockFiles.length > 1)
-        console.warn(`   ⚠ Multiple lockfiles found in "${dirPath}"`);
+      if (detectedLockFiles.length > 1) {
+        if (flags.strict) {
+          console.error(
+            `   ✘ Multiple lockfiles found in "${dirPath}" skipping install...`,
+          );
+          return;
+        } else console.warn(`   ⚠ Multiple lockfiles found in "${dirPath}"`);
+      }
 
       detectedLockFiles.forEach((detectedLockFile) => {
         const installCommand = installCommands[detectedLockFile];
@@ -109,16 +117,14 @@ function performClai() {
       `◼ Found ${modifiedFiles.length} modified file/s in the following directories:`,
     );
     console.log(`    ❯ ${modifiedFiles.join(",\n    ❯ ")}`);
-  }
 
-  if (modifiedFiles.length > 0) {
     const dirPaths = Array.from(
       new Set(
         modifiedFiles.map((pkgLockFilePath) => path.dirname(pkgLockFilePath)),
       ),
     );
 
-    installCommandInDirs(dirPaths);
+    installInDirs(dirPaths);
     console.log(
       `✔ Successfully ran install command in ${dirPaths.length} directories`,
     );
