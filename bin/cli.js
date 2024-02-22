@@ -60,7 +60,8 @@ try {
   let enabledFlags = [];
   if (flags.ci) enabledFlags.push("ci");
   if (flags.strict) enabledFlags.push("strict");
-  console.log(`◼ Enabled flags: \n    ❯ ${enabledFlags.join("\n    ❯ ")}`);
+  if (enabledFlags.length)
+    console.log(`◼ Enabled flags: \n    ❯ ${enabledFlags.join("\n    ❯ ")}`);
 
   console.log("❯ Performing git checks...");
   try {
