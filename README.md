@@ -1,4 +1,4 @@
-# ⬆️ @xarunoba/clai
+# @xarunoba/clai ⬆️
 
 ![Static Badge](https://img.shields.io/badge/Made_with-%E2%9D%A4%EF%B8%8F-red?style=for-the-badge) ![NPM License](https://img.shields.io/npm/l/%40xarunoba%2Fclai?style=for-the-badge)
 ![GitHub package.json version](https://img.shields.io/github/package-json/v/xarunoba/clai?style=for-the-badge&logo=npm)
@@ -13,6 +13,26 @@ Using a bot to update dependencies is becoming widespread. Installing after pull
 
 ## Installation
 
+### npm
+
+```
+npm install -D @xarunoba/clai
+```
+
+### pnpm
+
+```
+pnpm install -D @xarunoba/clai
+```
+
+### yarn
+
+```
+yarn add --dev @xarunoba/clai
+```
+
+## Setup
+
 ### With [`simple-git-hooks`](https://github.com/toplenboren/simple-git-hooks)
 
 Integrating with [`simple-git-hooks`](https://github.com/toplenboren/simple-git-hooks) is easy as a toasted bread:
@@ -22,7 +42,8 @@ Integrating with [`simple-git-hooks`](https://github.com/toplenboren/simple-git-
 {
   ...
   "simple-git-hooks": {
-    "post-merge": "npx @xarunoba/clai" // or use pnpm dlx, yarn dlx
+    // you can also use pnpm clai or yarn run clai
+    "post-merge": "npx clai"
   }
   ...
 }

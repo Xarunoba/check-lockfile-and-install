@@ -5,12 +5,14 @@ const fs = require("node:fs");
 const execSync = require("node:child_process").execSync;
 const process = require("node:process");
 
+const flags = require("yargs/yargs")(process.argv.slice(2)).parse();
 const cwd = process.cwd();
-const lockfileRegex = /^(pnpm-lock\.yaml|package-lock\.json|yarn\.lock)/gm; // regex pattern for finding lockfiles
+const lockfileRegex = /^(pnpm-lock\.yaml|package-lock\.json|yarn\.lock)/gm;
+
 const installCommands = {
-  "package-lock.json": "npm install",
-  "pnpm-lock.yaml": "pnpm install",
-  "yarn.lock": "yarn install",
+  "package-lock.json": `npm ${flags.ci ? "ci" : "install"}`,
+  "pnpm-lock.yaml": `pnpm ${flags.ci ? "install --frozen-lockfile" : "install"}`,
+  "yarn.lock": `yarn ${flags.ci ? "install --frozen-lockfile" : "install"}`,
 };
 
 function runInstallCommandInDirs(dirPaths) {
@@ -23,9 +25,12 @@ function runInstallCommandInDirs(dirPaths) {
       },
     );
 
-    if (detectedLockFiles.length === 0) {
+    if (detectedLockFiles.length === 0)
       console.error(`   ✘ No lockfiles found in "${dirPath}"`);
-    } else {
+    else {
+      if (detectedLockFiles.length > 1)
+        console.warn(`   ⚠ Multiple lockfiles found in "${dirPath}"`);
+
       detectedLockFiles.forEach((detectedLockFile) => {
         const installCommand = installCommands[detectedLockFile];
         console.log(`◼ "${detectedLockFile}" found in "${dirPath}"`);
@@ -52,18 +57,24 @@ function runInstallCommandInDirs(dirPaths) {
 
 try {
   console.log("❯ Preparing clai...");
+  let enabledFlags = [];
+  if (flags.ci) enabledFlags.push("ci");
+  if (flags.strict) enabledFlags.push("strict");
+  console.log(`◼ Enabled flags: \n    ❯ ${enabledFlags.join("\n    ❯ ")}`);
 
   try {
     execSync("git rev-parse --is-inside-work-tree", { stdio: "ignore" });
   } catch (error) {
     console.error("✘ No git repository found!");
-    process.exit(1);
+    console.log("✔ Finished clai!");
+    process.exit(flags.strict ? 1 : 0);
   }
   try {
     execSync("git rev-parse --verify HEAD~1", { stdio: "ignore" });
   } catch (error) {
     console.error("✘ No HEAD~1 found! You probably only have one commit.");
-    process.exit(1);
+    console.log("✔ Finished clai!");
+    process.exit(flags.strict ? 1 : 0);
   }
 
   console.log("❯ Checking for lockfile changes...");
@@ -85,7 +96,7 @@ try {
     console.log(
       `◼ Found ${modifiedFiles.length} modified file/s in the following directories:`,
     );
-    console.log(`    ❯ ${modifiedFiles.join(",\n    ❯ ")}\n`);
+    console.log(`    ❯ ${modifiedFiles.join(",\n    ❯ ")}`);
   }
 
   if (modifiedFiles.length > 0) {
@@ -99,9 +110,7 @@ try {
     console.log(
       `✔ Successfully ran install command in ${dirPaths.length} directories`,
     );
-  } else {
-    console.log("✘ No lockfile changes found!");
-  }
+  } else console.log("✘ No lockfile changes found!");
 
   console.log("✔ Finished clai!");
   process.exit(0);
