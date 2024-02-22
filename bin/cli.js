@@ -62,6 +62,7 @@ try {
   if (flags.strict) enabledFlags.push("strict");
   console.log(`◼ Enabled flags: \n    ❯ ${enabledFlags.join("\n    ❯ ")}`);
 
+  console.log("❯ Performing git checks...");
   try {
     execSync("git rev-parse --is-inside-work-tree", { stdio: "ignore" });
   } catch (error) {
