@@ -15,23 +15,50 @@ Using a bot to update dependencies is becoming widespread. Installing after pull
 
 ### npm
 
-```
+```bash
 npm install -D @xarunoba/clai
 ```
 
 ### pnpm
 
-```
+```bash
 pnpm install -D @xarunoba/clai
 ```
 
 ### yarn
 
-```
+```bash
 yarn add --dev @xarunoba/clai
 ```
 
-## Setup
+## Usage
+
+### npm
+
+```bash
+npx clai
+```
+
+### pnpm
+
+```bash
+pnpm clai
+```
+
+### yarn
+
+```bash
+yarn run clai
+```
+
+### flags
+
+You can add the following flags for `clai`:
+
+- `--ci` — use `ci` (npm) or `--frozen-lockfile` (pnpm, yarn) when installing.
+- `--strict` — throws an error when git checks fail.
+
+## Integrations
 
 ### With [`simple-git-hooks`](https://github.com/toplenboren/simple-git-hooks)
 
@@ -42,7 +69,6 @@ Integrating with [`simple-git-hooks`](https://github.com/toplenboren/simple-git-
 {
   ...
   "simple-git-hooks": {
-    // you can also use pnpm clai or yarn run clai
     "post-merge": "npx clai"
   }
   ...
