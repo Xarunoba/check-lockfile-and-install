@@ -15,7 +15,40 @@ const installCommands = {
   "yarn.lock": `yarn ${flags.ci ? "install --frozen-lockfile" : "install"}`,
 };
 
-function runInstallCommandInDirs(dirPaths) {
+function checkFlags() {
+  let enabledFlags = [];
+  if (flags.ci) enabledFlags.push("ci");
+  if (flags.strict) enabledFlags.push("strict");
+  if (enabledFlags.length)
+    console.log(`◼ Enabled flags: \n    ❯ ${enabledFlags.join("\n    ❯ ")}`);
+}
+function checkGit() {
+  console.log("❯ Performing git checks...");
+  try {
+    execSync("git --version", { stdio: "ignore" });
+  } catch (error) {
+    console.error("✘ No git version found!");
+    console.log("✔ Finished clai!");
+    process.exit(flags.strict ? 1 : 0);
+  }
+  try {
+    execSync("git rev-parse --is-inside-work-tree", { stdio: "ignore" });
+  } catch (error) {
+    console.error("✘ No git repository found!");
+    console.log("✔ Finished clai!");
+    process.exit(flags.strict ? 1 : 0);
+  }
+  try {
+    execSync("git rev-parse --verify HEAD~1", { stdio: "ignore" });
+  } catch (error) {
+    console.error("✘ No HEAD~1 found! You probably only have one commit.");
+    console.log("✔ Finished clai!");
+    process.exit(flags.strict ? 1 : 0);
+  }
+  console.log("✔ No git issues found!");
+}
+
+function installCommandInDirs(dirPaths) {
   dirPaths.forEach((dirPath) => {
     const detectedLockFiles = Object.keys(installCommands).filter(
       (lockFile) => {
@@ -41,7 +74,7 @@ function runInstallCommandInDirs(dirPaths) {
           execSync(installCommand);
           process.chdir(cwd);
           console.log(
-            `   ✔ Successfully ran "${installCommand}" in ${dirPath}`,
+            `   ✔ Successfully ran "${installCommand}" in "${dirPath}"`,
           );
         } catch (error) {
           console.error(
@@ -55,30 +88,7 @@ function runInstallCommandInDirs(dirPaths) {
   });
 }
 
-try {
-  console.log("❯ Preparing clai...");
-  let enabledFlags = [];
-  if (flags.ci) enabledFlags.push("ci");
-  if (flags.strict) enabledFlags.push("strict");
-  if (enabledFlags.length)
-    console.log(`◼ Enabled flags: \n    ❯ ${enabledFlags.join("\n    ❯ ")}`);
-
-  console.log("❯ Performing git checks...");
-  try {
-    execSync("git rev-parse --is-inside-work-tree", { stdio: "ignore" });
-  } catch (error) {
-    console.error("✘ No git repository found!");
-    console.log("✔ Finished clai!");
-    process.exit(flags.strict ? 1 : 0);
-  }
-  try {
-    execSync("git rev-parse --verify HEAD~1", { stdio: "ignore" });
-  } catch (error) {
-    console.error("✘ No HEAD~1 found! You probably only have one commit.");
-    console.log("✔ Finished clai!");
-    process.exit(flags.strict ? 1 : 0);
-  }
-
+function performClai() {
   console.log("❯ Checking for lockfile changes...");
   const gitDiffCommand = "git diff --name-only HEAD~1 HEAD";
   const gitDiffOutput = execSync(gitDiffCommand).toString();
@@ -108,15 +118,25 @@ try {
       ),
     );
 
-    runInstallCommandInDirs(dirPaths);
+    installCommandInDirs(dirPaths);
     console.log(
       `✔ Successfully ran install command in ${dirPaths.length} directories`,
     );
   } else console.log("✘ No lockfile changes found!");
-
-  console.log("✔ Finished clai!");
-  process.exit(0);
-} catch (err) {
-  console.error("✘ An error has occured:\n   ❯ ", err.message);
-  process.exit(1);
 }
+
+function main() {
+  try {
+    console.log("❯ Preparing clai...");
+    checkFlags();
+    checkGit();
+    performClai();
+    console.log("✔ Finished clai!");
+    process.exit(0);
+  } catch (err) {
+    console.error("✘ ", err.message);
+    process.exit(1);
+  }
+}
+
+main();
