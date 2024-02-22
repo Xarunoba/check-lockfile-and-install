@@ -17,18 +17,24 @@ Using a bot to update dependencies is becoming widespread. Installing after pull
 
 ```bash
 npm install -D @xarunoba/clai
+
+npx clai
 ```
 
 ### pnpm
 
 ```bash
 pnpm install -D @xarunoba/clai
+
+pnpm clai
 ```
 
 ### yarn
 
 ```bash
 yarn add --dev @xarunoba/clai
+
+yarn run clai
 ```
 
 ## Usage
@@ -36,19 +42,19 @@ yarn add --dev @xarunoba/clai
 ### npm
 
 ```bash
-npx clai
+npx @xarunoba/clai
 ```
 
 ### pnpm
 
 ```bash
-pnpm clai
+pnpm dlx @xarunoba/clai
 ```
 
 ### yarn
 
 ```bash
-yarn run clai
+yarn dlx @xarunoba/clai
 ```
 
 ### flags
@@ -69,7 +75,11 @@ Integrating with [`simple-git-hooks`](https://github.com/toplenboren/simple-git-
 {
   ...
   "simple-git-hooks": {
-    "post-merge": "npx clai"
+    // I prefer using the latest version of clai always
+    // instead of installing it as a dev dependency
+    // If you have installed it locally, you can use
+    // "post-merge": "npx clai"
+    "post-merge": "npx @xarunoba/clai"
   }
   ...
 }
