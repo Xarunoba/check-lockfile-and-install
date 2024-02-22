@@ -6,6 +6,7 @@
     "clai": "bin/cli.js"
   },
   "scripts": {
+    "prepare": "npx simple-git-hooks",
     "start": "node ./bin/cli.js"
   },
   "author": "Jeter Jude C. Santos <me@xaru.win> (https://xaru.win)",
@@ -22,5 +23,17 @@
   "homepage": "https://github.com/xarunoba/clai",
   "bugs": {
     "url": "https://github.com/xarunoba/clai/issues"
+  },
+  "devDependencies": {
+    "lint-staged": "^15.2.2",
+    "prettier": "3.2.5",
+    "simple-git-hooks": "^2.9.0"
+  },
+  "lint-staged": {
+    "*": "prettier --write"
+  },
+  "simple-git-hooks": {
+    "pre-commit": "npx lint-staged",
+    "post-merge": "node ./bin/cli.js"
   }
 }

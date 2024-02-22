@@ -1,6 +1,6 @@
 # ⬆️ @xarunoba/clai
 
-![Static Badge](https://img.shields.io/badge/Made_with-%E2%9D%A4%EF%B8%8F-red?style=for-the-badge) ![Static Badge](https://img.shields.io/badge/Under-100%20Lines-blue?style=for-the-badge) ![NPM License](https://img.shields.io/npm/l/%40xarunoba%2Fclai?style=for-the-badge)
+![Static Badge](https://img.shields.io/badge/Made_with-%E2%9D%A4%EF%B8%8F-red?style=for-the-badge) ![NPM License](https://img.shields.io/npm/l/%40xarunoba%2Fclai?style=for-the-badge)
 ![GitHub package.json version](https://img.shields.io/github/package-json/v/xarunoba/clai?style=for-the-badge&logo=npm)
 
 **`clai`** — check lockfiles and install
