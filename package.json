@@ -35,5 +35,8 @@
   "simple-git-hooks": {
     "pre-commit": "npx lint-staged",
     "post-merge": "node ./bin/cli.js"
+  },
+  "dependencies": {
+    "yargs": "^17.7.2"
   }
 }
