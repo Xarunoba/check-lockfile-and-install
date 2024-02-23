@@ -61,8 +61,10 @@ yarn dlx @xarunoba/clai
 
 You can add the following flags for `clai`:
 
-- `--ci` — use `ci` (npm) or `--frozen-lockfile` (pnpm, yarn) when installing.
-- `--strict` — throws an error when git checks fail.
+- `--version` — Show version number
+- `--ci` — use `ci` (npm) or `--frozen-lockfile` (pnpm, yarn) when installing
+- `--strict` — throws an error when git checks fail
+- `--help` — Show help
 
 ## Integrations
 
