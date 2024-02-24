@@ -63,7 +63,7 @@ You can add the following flags for `clai`:
 
 - `--version` — Show version number
 - `--ci` — use `ci` (npm) or `--frozen-lockfile` (pnpm, yarn) when installing
-- `--strict` — throws an error when git checks fail
+- `--strict` — Will immediately exit if any issues are found
 - `--help` — Show help
 
 ## Integrations
