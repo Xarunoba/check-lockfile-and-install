@@ -5,7 +5,7 @@
 
 **`clai`** — check lockfiles and install
 
-Run package installation after checking for lockfile updates. Integrate with git hooks. Supports `npm`, `pnpm`, and `yarn`.
+Run package installation after checking for lockfile updates. Integrate with git hooks. Supports `npm`, `pnpm`, and `yarn`. Uses `git` and any of the supported package managers under the hood.
 
 ## Why
 
@@ -61,10 +61,11 @@ yarn dlx @xarunoba/clai
 
 You can add the following flags for `clai`:
 
-- `--version` — Show version number
-- `--ci` — use `ci` (npm) or `--frozen-lockfile` (pnpm, yarn) when installing
-- `--strict` — Will immediately exit if any issues are found
-- `--help` — Show help
+- `-v, --version` — Show version number
+- `-h, --help` — Show help
+- `-c, --cleaninstall` — use `ci` (npm) or `--frozen-lockfile` (pnpm, yarn) when installing
+- `-s, --strict` — Will immediately exit if any issues are found
+- `-q, --quiet` — Will not log anything to the console
 
 ## Integrations
 
