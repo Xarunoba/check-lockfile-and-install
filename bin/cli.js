@@ -11,13 +11,12 @@ const cwd = process.cwd();
 const lockfileRegex = /^(pnpm-lock\.yaml|package-lock\.json|yarn\.lock)/gm;
 
 const flagsDescription = {
-  strict: "Will immediately exit if any issues are found.",
-  ci: "Will do a clean install or install --frozen-lockfile.",
+  strict: "Will immediately exit if any issues are found",
+  ci: "Will do a clean install or install --frozen-lockfile",
 };
 
 const flags = yargs(hideBin(process.argv))
   .strict()
-  .usage("Usage: $0 [options]")
   .options({
     strict: {
       describe: flagsDescription.strict,
