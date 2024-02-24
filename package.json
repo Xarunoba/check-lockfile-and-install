@@ -1,6 +1,6 @@
 {
   "name": "@xarunoba/clai",
-  "version": "0.3.8",
+  "version": "0.3.9",
   "description": "Run package installation after checking for lockfile updates.",
   "files": [
     "bin"

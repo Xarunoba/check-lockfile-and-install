@@ -93,7 +93,7 @@ function installInDirs(dirPaths) {
     const detectedLockFiles = Object.keys(installCommands).filter(
       (lockFile) => {
         const lockfilePath = path.posix.join(dirPath, lockFile);
-        console.log(`❯ Checking for "${lockFile}" in "${dirPath}"`);
+        console.log(`❯ Checking for ${lockFile} in "${dirPath}"`);
         return fs.existsSync(lockfilePath);
       },
     );
@@ -114,8 +114,8 @@ function installInDirs(dirPaths) {
       // Install dependencies
       detectedLockFiles.forEach((detectedLockFile) => {
         const installCommand = installCommands[detectedLockFile];
-        console.log(`◼ "${detectedLockFile}" found in "${dirPath}"`);
-        console.log(`   ❯ Running "${installCommand}" in ${dirPath}`);
+        console.log(`◼ ${detectedLockFile} found in "${dirPath}"`);
+        console.log(`   ❯ Running "${installCommand}" in "${dirPath}"`);
 
         try {
           process.chdir(dirPath);
@@ -148,31 +148,29 @@ function performClai() {
   // Execute the git diff command and store the output
   const gitDiffOutput = execSync(gitDiffCommand).toString();
 
-  // Filter and map the modified files from git diff output
-  const modifiedFiles = gitDiffOutput
+  // Filter and map the changed files from git diff output
+  const changedFiles = gitDiffOutput
     .split("\n")
     .filter((fileName) => fileName.match(lockfileRegex))
     .map((fileName) => path.posix.join(...fileName.split("/").slice(2)));
 
   console.log(
-    `◼ Modified files: \n    ❯ ${gitDiffOutput
+    `◼ Changed files: \n    ❯ ${gitDiffOutput
       .split("\n")
       .filter(Boolean)
       .join("\n    ❯ ")}`,
   );
 
-  // Check if there are modified files
-  if (modifiedFiles.length > 0) {
+  // Check if there are changed files
+  if (changedFiles.length > 0) {
     console.log(
-      `◼ Found ${modifiedFiles.length} modified file/s in the following directories:`,
+      `◼ Found ${changedFiles.length} changed lockfile/s in the following directories:`,
     );
-    console.log(`    ❯ "${modifiedFiles.join(`"\n    ❯ "`)}"`);
+    console.log(`    ❯ "${changedFiles.join(`"\n    ❯ "`)}"`);
 
-    // Get unique directory paths from the modified file paths
+    // Get unique directory paths from the changed file paths
     const dirPaths = Array.from(
-      new Set(
-        modifiedFiles.map((pkgLockFilePath) => path.dirname(pkgLockFilePath)),
-      ),
+      new Set(changedFiles.map((lockfilePath) => path.dirname(lockfilePath))),
     );
 
     // Call installInDirs function with the directory paths
