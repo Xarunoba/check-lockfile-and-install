@@ -5,7 +5,7 @@
 
 **`clai`** — check lockfiles and install
 
-Run package installation after checking for lockfile updates. Integrate with git hooks. Supports `npm`, `pnpm`, and `yarn`.
+Run package installation after checking for lockfile updates. Integrate with git hooks. Supports `npm`, `pnpm`, and `yarn`. Uses `git` and any of the supported package managers under the hood.
 
 ## Why
 
