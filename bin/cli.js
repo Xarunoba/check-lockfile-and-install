@@ -1,13 +1,13 @@
 #!/usr/bin/env node
 
-const path = require("node:path");
-const fs = require("node:fs");
-const process = require("node:process");
-const execSync = require("node:child_process").execSync;
-const yargs = require("yargs/yargs");
-const { hideBin } = require("yargs/helpers");
+import { posix, dirname } from "node:path";
+import { existsSync } from "node:fs";
+import { cwd as _cwd, argv, exit, chdir } from "node:process";
+import { execSync } from "node:child_process";
+import yargs from "yargs/yargs";
+import { hideBin } from "yargs/helpers";
 
-const cwd = process.cwd();
+const cwd = _cwd();
 const lockfileRegex = /^(pnpm-lock\.yaml|package-lock\.json|yarn\.lock)/gm;
 
 const flagsDescription = {
@@ -15,7 +15,7 @@ const flagsDescription = {
   ci: "Will do a clean install or install --frozen-lockfile",
 };
 
-const flags = yargs(hideBin(process.argv))
+const flags = yargs(hideBin(argv))
   .strict()
   .options({
     strict: {
@@ -62,7 +62,7 @@ function checkGit() {
   } catch (error) {
     console.error("✘ No git version found!");
     console.log("✔ Finished clai!");
-    process.exit(flags.strict ? 1 : 0);
+    exit(flags.strict ? 1 : 0);
   }
   try {
     // Check if the current directory is a git repository
@@ -70,7 +70,7 @@ function checkGit() {
   } catch (error) {
     console.error("✘ No git repository found!");
     console.log("✔ Finished clai!");
-    process.exit(flags.strict ? 1 : 0);
+    exit(flags.strict ? 1 : 0);
   }
   try {
     // Check if HEAD~1 exists (checking for at least 2 commits in the repository)
@@ -78,7 +78,7 @@ function checkGit() {
   } catch (error) {
     console.error("✘ No HEAD~1 found! You probably only have one commit.");
     console.log("✔ Finished clai!");
-    process.exit(flags.strict ? 1 : 0);
+    exit(flags.strict ? 1 : 0);
   }
   console.log("✔ No git issues found!");
 }
@@ -92,9 +92,9 @@ function installInDirs(dirPaths) {
     // Detect lock files in the directory
     const detectedLockFiles = Object.keys(installCommands).filter(
       (lockFile) => {
-        const lockfilePath = path.posix.join(dirPath, lockFile);
+        const lockfilePath = posix.join(dirPath, lockFile);
         console.log(`❯ Checking for ${lockFile} in "${dirPath}"`);
-        return fs.existsSync(lockfilePath);
+        return existsSync(lockfilePath);
       },
     );
 
@@ -118,9 +118,9 @@ function installInDirs(dirPaths) {
         console.log(`   ❯ Running "${installCommand}" in "${dirPath}"`);
 
         try {
-          process.chdir(dirPath);
+          chdir(dirPath);
           execSync(installCommand);
-          process.chdir(cwd);
+          chdir(cwd);
           console.log(
             `   ✔ Successfully ran "${installCommand}" in "${dirPath}"`,
           );
@@ -129,7 +129,7 @@ function installInDirs(dirPaths) {
             `   ✘ Failed to run "${installCommand}" in "${dirPath}":`,
             error,
           );
-          process.chdir(cwd);
+          chdir(cwd);
         }
       });
     }
@@ -152,7 +152,7 @@ function performClai() {
   const changedFiles = gitDiffOutput
     .split("\n")
     .filter((fileName) => fileName.match(lockfileRegex))
-    .map((fileName) => path.posix.join(...fileName.split("/").slice(2)));
+    .map((fileName) => posix.join(...fileName.split("/").slice(2)));
 
   console.log(
     `◼ Changed files: \n    ❯ ${gitDiffOutput
@@ -170,7 +170,7 @@ function performClai() {
 
     // Get unique directory paths from the changed file paths
     const dirPaths = Array.from(
-      new Set(changedFiles.map((lockfilePath) => path.dirname(lockfilePath))),
+      new Set(changedFiles.map((lockfilePath) => dirname(lockfilePath))),
     );
 
     // Call installInDirs function with the directory paths
@@ -192,10 +192,10 @@ function main() {
     checkGit();
     performClai();
     console.log("✔ Finished clai!");
-    process.exit(0);
+    exit(0);
   } catch (err) {
     console.error("✘ ", err.message);
-    process.exit(1);
+    exit(1);
   }
 }
 
