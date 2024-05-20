@@ -42,7 +42,7 @@
     "simple-git-hooks": "^2.9.0"
   },
   "lint-staged": {
-    "*": "prettier --write"
+    "*.{js,json,md,yml}": "prettier --write"
   },
   "simple-git-hooks": {
     "pre-commit": "npx lint-staged",
